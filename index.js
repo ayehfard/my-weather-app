@@ -1,4 +1,36 @@
-function formatDate(currentFormat) {
+function showCity(city) {
+  let apiKey = "b2a5adcct04b33178913oc335f405433";
+  let apiUrl = `https://api.shecodes.io/weather/v1/current?query=${city}&key=${apiKey}&units=metric`;
+  axios.get(apiUrl).then(displayTemperature);
+}
+
+function searchSubmit(event) {
+  event.preventDefault();
+  let searchBarElement = document.querySelector("#search-bar");
+  searchCity(searchBarElement.value);
+}
+
+function displayTemperature(response) {
+  let temperatureElement = document.querySelector("#current-temperature");
+  let temperature = Math.round(response.data.temperature.current);
+  let cityElement = document.querySelector("#current-city");
+  let descriptionElement = document.querySelector("#description");
+  let humidityElement = document.querySelector("#humidity");
+  let windSpeedElement = document.querySelector("#wind-speed");
+  let timeElement = document.querySelector("#time");
+  let date = new Date(response.data.time * 1000);
+
+  timeElement.innerHTML = formatDate(date);
+  windSpeedElement.innerHTML = `${response.data.wind.speed}km/h`;
+  humidityElement.innerHTML = `${response.data.temperature.humidity}%`;
+  descriptionElement.innerHTML = response.data.condition.description;
+  cityElement.innerHTML = response.data.city;
+  temperatureElement.innerHTML = temperature;
+}
+
+function formatDate(date) {
+  let hours = date.getHours();
+  let minutes = date.getMinutes();
   let days = [
     "Sunday",
     "Monday",
@@ -9,10 +41,7 @@ function formatDate(currentFormat) {
     "Saturday",
   ];
 
-  let now = new Date();
-  let day = days[now.getDay()];
-  let hours = now.getHours();
-  let minutes = now.getMinutes();
+  let day = days[date.getDay()];
 
   if (minutes < 10) {
     minutes = `0${minutes}`;
@@ -22,31 +51,10 @@ function formatDate(currentFormat) {
     hours = `0${hours}`;
   }
 
-  let currentDate = `${day} ${hours}:${minutes}`;
-  return currentDate;
+  return `${day} ${hours}:${minutes}`;
 }
-
-function showCity(event) {
-  event.preventDefault();
-  let searchBarElement = document.querySelector("#search-bar");
-  let city = searchBarElement.value;
-
-  let apiKey = "b2a5adcct04b33178913oc335f405433";
-  let apiUrl = `https://api.shecodes.io/weather/v1/current?query=${city}&key=${apiKey}&units=metric`;
-
-  axios.get(apiUrl).then(displayTemperature);
-}
-
-function displayTemperature(response) {
-  let temperatureElement = document.querySelector("#current-temperature");
-  let temperature = Math.round(response.data.temperature.current);
-  let cityElement = document.querySelector("#current-city");
-  cityElement.innerHTML = response.data.city;
-  temperatureElement.innerHTML = temperature;
-}
-
-let currentDateElement = document.querySelector("#current-date");
-currentDateElement.innerHTML = formatDate();
 
 let form = document.querySelector("#search-form");
 form.addEventListener("submit", showCity);
+
+showCity("Shiraz");
