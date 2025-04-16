@@ -1,5 +1,5 @@
 function showCity(city) {
-  let apiKey = "b2a5adcct04b33178913oc335f405433";
+  let apiKey = "b36tf90a76ca9d0b31o886f434445568";
   let apiUrl = `https://api.shecodes.io/weather/v1/current?query=${city}&key=${apiKey}&units=metric`;
   axios.get(apiUrl).then(displayTemperature);
 }
@@ -7,7 +7,7 @@ function showCity(city) {
 function searchSubmit(event) {
   event.preventDefault();
   let searchBarElement = document.querySelector("#search-bar");
-  searchCity(searchBarElement.value);
+  showCity(searchBarElement.value);
 }
 
 function displayTemperature(response) {
@@ -19,7 +19,9 @@ function displayTemperature(response) {
   let windSpeedElement = document.querySelector("#wind-speed");
   let timeElement = document.querySelector("#time");
   let date = new Date(response.data.time * 1000);
+  let iconElement = document.querySelector("#icon");
 
+  iconElement.innerHTML = `<img src="${response.data.condition.icon_url}" class="weather-app-icon"/>`;
   timeElement.innerHTML = formatDate(date);
   windSpeedElement.innerHTML = `${response.data.wind.speed}km/h`;
   humidityElement.innerHTML = `${response.data.temperature.humidity}%`;
@@ -55,6 +57,5 @@ function formatDate(date) {
 }
 
 let form = document.querySelector("#search-form");
-form.addEventListener("submit", showCity);
-
-showCity("Shiraz");
+form.addEventListener("submit", searchSubmit);
+showCity("Kuwait");
